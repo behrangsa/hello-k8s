@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: hello-k8s
+spec:
+  http:
+    - name: hello-k8s
+      match:
+        - uri:
+            prefix: /
+      route:
+        destination:
+          host: hello-k8s
+          port:
+            number: 8080

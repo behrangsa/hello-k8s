@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-k8s
+  namespace: default
+  labels:
+    app: hello-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-k8s
+  template:
+    spec:
+      containers:
+        - name: hello-k8s
+          image: gcr.io/architecting-with-gke-304212/hello-k8s:c161890
+          imagePullPolicy: Always
+          command:
+            - "/bin/api"
+          args:
+            - "/app/config.yaml"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+              cpu: '1'
+
