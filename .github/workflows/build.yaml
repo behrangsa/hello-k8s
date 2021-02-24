@@ -35,7 +35,7 @@ jobs:
       runs-on: ubuntu-20.04
 #      needs: test
       env:
-        HASH: $(git rev-parse --short "$GITHUB_SHA")
+        SHORT_HASH: $(git rev-parse --short "$GITHUB_SHA")
         BRANCH: ${GITHUB_REF##*/}
         SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
         PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -55,4 +55,4 @@ jobs:
             gcloud auth configure-docker -q
 
         - name: Build image
-          run: docker build . -t "gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA"
+          run: docker build . -t "gcr.io/$PROJECT_ID/$SERVICE_NAME:$SHORT_HASH"
