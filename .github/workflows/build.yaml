@@ -33,9 +33,7 @@ jobs:
     image:
       name: Build Docker image
       runs-on: ubuntu-20.04
-      needs:
-        - lint
-        - test
+      needs: test
       env:
         HASH: $(git rev-parse --short "$GITHUB_SHA")
         BRANCH: ${GITHUB_REF##*/}
@@ -52,9 +50,10 @@ jobs:
             service_account_key: ${{ secrets.GCR_DEVOPS_SERVICE_ACCOUNT_KEY }}
             export_default_credentials: true
 
-        - run: |
+        - name: Docker auth to GCP
+          run: |
             gcloud auth configure-docker -q
 
-        - name: Image
+        - name: Build image
           run: |-
             docker build --build-arg -t gcr.io/$PROJECT_ID/$IMAGE_NAME:$GITHUB_SHA .
