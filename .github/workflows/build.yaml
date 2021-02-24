@@ -53,4 +53,4 @@ jobs:
             gcloud auth configure-docker -q
 
         - name: Build image
-          run: docker build . -t "gcr.io/${PROJECT_ID}/${SERVICE_NAME}:$(git rev-parse --short HEAD)"
+          run: docker build . -t "gcr.io/architecting-with-gke-304212/hello-k8s:$(git rev-parse --short HEAD)"
