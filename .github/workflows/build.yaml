@@ -5,39 +5,39 @@ on:
   push:
 
 jobs:
-    lint:
-      name: Lint
-      runs-on: ubuntu-20.04
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions-contrib/golangci-lint@v1
-          env:
-            GO111MODULE: "on"
-            GOFLAGS: "-mod=vendor"
-
-    test:
-      name: Unit tests
-      runs-on: ubuntu-20.04
-      steps:
-        - name: Install Go
-          uses: actions/setup-go@v2
-          with:
-            go-version: 1.16
-
-        - name: Checkout codebase
-          uses: actions/checkout@v2
-
-        - name: Run unit tests
-          run: go test ./...
+#    lint:
+#      name: Lint
+#      runs-on: ubuntu-20.04
+#      steps:
+#        - uses: actions/checkout@v2
+#        - uses: actions-contrib/golangci-lint@v1
+#          env:
+#            GO111MODULE: "on"
+#            GOFLAGS: "-mod=vendor"
+#
+#    test:
+#      name: Unit tests
+#      runs-on: ubuntu-20.04
+#      steps:
+#        - name: Install Go
+#          uses: actions/setup-go@v2
+#          with:
+#            go-version: 1.16
+#
+#        - name: Checkout codebase
+#          uses: actions/checkout@v2
+#
+#        - name: Run unit tests
+#          run: go test ./...
 
     image:
       name: Build Docker image
       runs-on: ubuntu-20.04
-      needs: test
+#      needs: test
       env:
         HASH: $(git rev-parse --short "$GITHUB_SHA")
         BRANCH: ${GITHUB_REF##*/}
-        IMAGE_NAME: ${{ secrets.SERVICE_NAME }}
+        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
         PROJECT_ID: ${{ secrets.PROJECT_ID }}
       steps:
         - name: Checkout codebase
@@ -56,4 +56,4 @@ jobs:
 
         - name: Build image
           run: |-
-            docker build --build-arg -t gcr.io/$PROJECT_ID/$IMAGE_NAME:$GITHUB_SHA .
+            docker build --build-arg -t gcr.io/$PROJECT_ID/$SERVICE_NAME:$GITHUB_SHA .
