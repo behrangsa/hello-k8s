@@ -5,54 +5,53 @@ on:
   push:
 
 jobs:
-#    lint:
-#      name: Lint
-#      runs-on: ubuntu-20.04
-#      steps:
-#        - uses: actions/checkout@v2
-#        - uses: actions-contrib/golangci-lint@v1
-#          env:
-#            GO111MODULE: "on"
-#            GOFLAGS: "-mod=vendor"
-#
-#    test:
-#      name: Unit tests
-#      runs-on: ubuntu-20.04
-#      steps:
-#        - name: Install Go
-#          uses: actions/setup-go@v2
-#          with:
-#            go-version: 1.16
-#
-#        - name: Checkout codebase
-#          uses: actions/checkout@v2
-#
-#        - name: Run unit tests
-#          run: go test ./...
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-contrib/golangci-lint@v1
+        env:
+          GO111MODULE: "on"
+          GOFLAGS: "-mod=vendor"
 
-    image:
-      name: Build Docker image
-      runs-on: ubuntu-20.04
-#      needs: test
-      env:
-        SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
-        PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      steps:
-        - name: Checkout codebase
-          uses: actions/checkout@v2
+  test:
+    name: Unit tests
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
 
-        - name: Setup gcloud
-          uses: google-github-actions/setup-gcloud@master
-          with:
-            project_id: ${{ secrets.PROJECT_ID }}
-            service_account_key: ${{ secrets.GCR_DEVOPS_SERVICE_ACCOUNT_KEY }}
-            export_default_credentials: true
+      - name: Checkout codebase
+        uses: actions/checkout@v2
 
-        - name: Authenticate to GCR
-          run: gcloud auth configure-docker -q
+      - name: Run unit tests
+        run: go test ./...
 
-        - name: Build image
-          run: docker build . -t gcr.io/${PROJECT_ID}/${SERVICE_NAME}:$(git rev-parse --short HEAD)
+  image:
+    name: Build Docker image
+    runs-on: ubuntu-20.04
+    env:
+      SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+    steps:
+      - name: Checkout codebase
+        uses: actions/checkout@v2
 
-        - name: Push image
-          run: docker push gcr.io/${PROJECT_ID}/${SERVICE_NAME}:$(git rev-parse --short HEAD)
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCR_DEVOPS_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
+      - name: Authenticate to GCR
+        run: gcloud auth configure-docker -q
+
+      - name: Build image
+        run: docker build . -t gcr.io/${PROJECT_ID}/${SERVICE_NAME}:$(git rev-parse --short HEAD)
+
+      - name: Push image
+        run: docker push gcr.io/${PROJECT_ID}/${SERVICE_NAME}:$(git rev-parse --short HEAD)
