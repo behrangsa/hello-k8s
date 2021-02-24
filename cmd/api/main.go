@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/behrangsa/hello-k8s/internal"
+	"github.com/behrangsa/hello-k8s/internal/handlers"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -9,8 +9,8 @@ import (
 func main() {
 	log.Info("Starting...")
 
-	http.HandleFunc("/", internal.GetIndex)
-	http.HandleFunc("/hello", internal.GetHello)
+	http.HandleFunc("/", handlers.GetIndex)
+	http.HandleFunc("/hello", handlers.GetHello)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
