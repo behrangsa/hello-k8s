@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"github.com/behrangsa/hello-k8s/internal"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -9,13 +9,8 @@ import (
 func main() {
 	log.Info("Starting...")
 
-	http.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		_, _ = fmt.Fprint(writer, "I am Groot!")
-	})
-
-	http.HandleFunc("/hello", func(writer http.ResponseWriter, request *http.Request) {
-		_, _ = fmt.Fprint(writer, "Hello!")
-	})
+	http.HandleFunc("/", internal.GetIndex)
+	http.HandleFunc("/hello", internal.GetHello)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
