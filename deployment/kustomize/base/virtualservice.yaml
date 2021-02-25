@@ -3,13 +3,15 @@ kind: VirtualService
 metadata:
   name: hello-k8s
 spec:
+  hosts:
+    - ???
   http:
     - name: hello-k8s
       match:
         - uri:
             prefix: /
       route:
-        destination:
-          host: hello-k8s
-          port:
-            number: 8080
+        - destination:
+            host: hello-k8s
+            port:
+              number: 8080
