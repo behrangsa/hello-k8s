@@ -4,7 +4,7 @@ metadata:
   name: hello-k8s
 spec:
   hosts:
-    - ???
+    - hello.local
   http:
     - name: hello-k8s
       match:
